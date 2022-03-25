@@ -2,3 +2,25 @@ WINDOW_WIDTH = 840
 WINDOW_HEIGHT = 720
 WINDOW_SHAPE = (WINDOW_WIDTH,WINDOW_HEIGHT)
 FPS = 30
+
+#defining the RGB for various colours used
+WHITE= (255, 255, 255)
+BLACK= (  0,   0,   0)
+RED = (255,   0,   0)
+GREEN= (  0, 255,   0)
+DARKGREEN= (  0, 155,   0)
+DARKGRAY= ( 40,  40,  40)
+LIGHTSALMON=(255, 160, 122)
+ORANGE=(221, 118, 7)
+LIGHTORANGE=(227,155,78)
+CORAL=(255, 127, 80)
+BLUE = (0, 0, 255)
+LIGHTBLUE = (0, 0, 150)
+
+BGCOLOR = LIGHTORANGE
+UP = 'up'
+DOWN = 'down'
+LEFT = 'left'
+RIGHT = 'right'
+
+TABLE=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]

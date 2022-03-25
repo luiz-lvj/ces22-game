@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from constants import *
 import sys
+from Level1 import LevelOne
 
 def main():
     global FPS_CONTROLLER, screen, MAIN_FONT
@@ -71,15 +72,17 @@ def main():
         text_rect = level_surf.get_rect()
         text_rect.center = (center_x, center_y)
         screen.blit(level_surf, text_rect)
+        level_one = LevelOne(TABLE, screen)
 
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
         if center_x - width/2 <= mouse[0] <= center_x + width/2 and center_y - height/2 <= mouse[1] <= center_y + height/2:
             if click[0] == 1 and play_level != None:
-                play_level()
+                play_level(level_one)
 
-    def level1():
+    def level1(inst_level):
+        inst_level.runGame()
         while True:
             screen.fill((255,255,255))
             
