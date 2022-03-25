@@ -53,12 +53,43 @@ def main():
     def levels_screen():
         while True:
             screen.fill((255,255,255))
-            
+            click_to_level("Nível 1", 0,0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/4, WINDOW_HEIGHT/4, (0,0,0), level1)
+            click_to_level("Nível 2", WINDOW_WIDTH/2,0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH*3/4, WINDOW_HEIGHT/4, (255,0,0),None)
+            click_to_level("Nível 3", 0,WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/4, WINDOW_HEIGHT*3/4, (0,255,0), None)
+            click_to_level("Nível 4", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH*3/4, WINDOW_HEIGHT*3/4, (0,0,255), None)
+
             if check_for_key_press():
-                    pygame.event.get()
-                    return
+                pygame.event.get()
+                return
             pygame.display.update()
             FPS_CONTROLLER.tick(FPS)
+
+    def click_to_level(level_name, pos_x, pos_y, width, height, center_x, center_y, color, play_level):
+        pygame.draw.rect(screen, color, (pos_x, pos_y, width, height))
+        level_text = pygame.font.Font('freesansbold.ttf',50)
+        level_surf = level_text.render(level_name, True, (255,255,255))
+        text_rect = level_surf.get_rect()
+        text_rect.center = (center_x, center_y)
+        screen.blit(level_surf, text_rect)
+
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        if center_x - width/2 <= mouse[0] <= center_x + width/2 and center_y - height/2 <= mouse[1] <= center_y + height/2:
+            if click[0] == 1 and play_level != None:
+                play_level()
+
+    def level1():
+        while True:
+            screen.fill((255,255,255))
+            
+            if check_for_key_press():
+                pygame.event.get()
+                return
+            pygame.display.update()
+            FPS_CONTROLLER.tick(FPS)
+            
+
 
     def check_for_key_press():
         if len(pygame.event.get(QUIT)) > 0:
