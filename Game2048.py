@@ -29,8 +29,8 @@ class Game2048:
         self.FPS.tick(FPS)
 
 
-    # def quit_game():
-    #     pygame.quit()
-    #     sys.exit()
+    def quit_game():
+        pygame.quit()
+        sys.exit()
 
 
