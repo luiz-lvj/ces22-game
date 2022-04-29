@@ -126,7 +126,7 @@ class LevelOne:
                     return sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if self.gameOver():
-                        print('over')
+                        self.rect_restart()
                     if running:
                         desired_key = None
                         if event.key == pygame.K_UP:
@@ -179,8 +179,18 @@ class LevelOne:
         click = pygame.mouse.get_pressed()
         if 650 < mouse[0] < 830 and 430 <= mouse[1] <= 530:
             if click[0] == 1:
-                self.table = TABLE
-                self.show(TABLE)
+                self.restart_level()
+
+    def rect_restart(self):
+        button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 550, 160, 30))
+        button = pygame.font.Font('freesansbold.ttf', 30)
+        buttonr_text = button.render("Game Over", True, (255,255,255), (255,0,0))
+        display_text = pygame.transform.rotate(buttonr_text, 0)
+        self.screen.blit(display_text, button_rect)
+
+    def restart_level(self):
+        self.table = TABLE
+        self.show(TABLE)
                 
 
     def key(self, direction, T):

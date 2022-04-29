@@ -61,6 +61,7 @@ class LevelThree:
         self.direction = ''
         self.screen = screen
         self.FPS_CONTROLLER = pygame.time.Clock()
+        self.is_running = True
 
     def randomfill(self):
         # search for zero in the game table and randomly fill the places
@@ -120,15 +121,21 @@ class LevelThree:
         
         while True:
             self.manage_timer(time_begining)
+            if not self.button_homepage():
+                return 1
+            time_begining = self.button_restart(time_begining)
             for event in pygame.event.get():
-                if not self.button_homepage():
-                    return 1
-                time_begining = self.button_restart(time_begining)
+                #if not self.button_homepage():
+                #    return 1
+                #time_begining = self.button_restart(time_begining)
                 if event.type == pygame.QUIT:
                     print("quit")
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    if self.gameOver():
+                        self.is_running = False
+                        self.rect_restart()
                     if running:
                         desired_key = None
                         if event.key == pygame.K_UP:
@@ -157,6 +164,8 @@ class LevelThree:
             pygame.display.update()
 
     def manage_timer(self, time_begining):
+        if not self.is_running:
+            return
         time_right_now = pygame.time.get_ticks()
         time_game = time_right_now - time_begining
         time_seconds = math.floor(time_game/1000)
@@ -185,6 +194,7 @@ class LevelThree:
 
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
+        pygame.display.flip()
         if 650 < mouse[0] < 830 and 180 <= mouse[1] <= 280:
             if click[0] == 1:
                 return False
@@ -200,12 +210,20 @@ class LevelThree:
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         time_counting = time_begining
+        pygame.display.flip()
         if 650 < mouse[0] < 830 and 430 <= mouse[1] <= 530:
             if click[0] == 1:
                 self.table = TABLE
                 time_counting = pygame.time.get_ticks()
                 self.show(time_counting, TABLE)
         return time_counting
+    
+    def rect_restart(self):
+        button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 550, 160, 30))
+        button = pygame.font.Font('freesansbold.ttf', 30)
+        buttonr_text = button.render("Game Over", True, (255,255,255), (255,0,0))
+        display_text = pygame.transform.rotate(buttonr_text, 0)
+        self.screen.blit(display_text, button_rect)
                 
 
     def key(self, direction, T):
