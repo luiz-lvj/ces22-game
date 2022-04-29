@@ -89,20 +89,20 @@ class LevelOne:
                         return False
         return True
 
-    def show(self):
+    def show(self, shown_table):
         # showing the table
         self.screen.fill(colorback)
         myfont = pygame.font.SysFont("Arial", 60, bold=True)
         for i in range(4):
             for j in range(4):
-                color = Piece(self.table[i][j]).generateColor()
+                color = Piece(shown_table[i][j]).generateColor()
                 pygame.draw.rect(self.screen, color, (j*boxsize+margin,
                                                                         i*boxsize+margin,
                                                                         boxsize-2*margin,
                                                                         boxsize-2*margin),
                                  thickness)
-                if self.table[i][j] != 0:
-                    label = Piece(self.table[i][j]).generateLabel()
+                if shown_table[i][j] != 0:
+                    label = Piece(shown_table[i][j]).generateLabel()
                     self.screen.blit(
                         label, (j*boxsize+2*margin, i*boxsize+9*margin))
 
@@ -111,12 +111,16 @@ class LevelOne:
     def runGame(self):
         self.table = self.randomfill()
         self.table = self.randomfill()
-        self.show()
+        self.show(TABLE)
         running = True
 
         while True:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if not self.button_homepage():
+                    return 1
+                self.button_restart()
+
+                if event.type == pygame.QUIT:
                     print("quit")
                     pygame.quit()
                     return sys.exit()
@@ -140,9 +144,42 @@ class LevelOne:
                         if new_table != self.table:
                             self.table = new_table
                             self.table = self.randomfill()
-                            self.show()
+                            self.show(self.table)
+                    else:
+                        return 1
                         # if gameOver(TABLE):
                         #     showGameOverMessage()
+            pygame.display.update()
+
+    def button_homepage(self):
+        button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 180, 160, 100))
+        button = pygame.font.Font('freesansbold.ttf', 30)
+        buttonr_text = button.render("Tela Inicial", True, (255,255,255), (0,0,0))
+        display_text = pygame.transform.rotate(buttonr_text, 0)
+        self.screen.blit(display_text, button_rect)
+
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if 650 < mouse[0] < 830 and 180 <= mouse[1] <= 280:
+            if click[0] == 1:
+                return False
+        return True
+    
+
+    def button_restart(self):
+        button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 430, 160, 100))
+        button = pygame.font.Font('freesansbold.ttf', 30)
+        buttonr_text = button.render("Reiniciar", True, (255,255,255), (0,0,0))
+        display_text = pygame.transform.rotate(buttonr_text, 0)
+        self.screen.blit(display_text, button_rect)
+
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if 650 < mouse[0] < 830 and 430 <= mouse[1] <= 530:
+            if click[0] == 1:
+                self.table = TABLE
+                self.show(TABLE)
+                
 
     def key(self, direction, T):
         if direction == 'w':
@@ -214,3 +251,6 @@ class LevelOne:
             T[pi][pj] = 0
             pi -= 1
         return T
+    
+    def __del__(self):
+        print('deleting instance')

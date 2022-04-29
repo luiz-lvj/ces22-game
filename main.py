@@ -1,3 +1,4 @@
+
 import pygame
 from pygame.locals import *
 from constants import *
@@ -15,7 +16,6 @@ MAIN_FONT = pygame.font.Font('freesansbold.ttf', 18)
 pygame.display.set_caption('2^n plus')
 
 game_instance = Game2048(screen, FPS_CONTROLLER)
-
 game_instance.homepage()
 
 

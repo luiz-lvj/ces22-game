@@ -93,20 +93,20 @@ class LevelTwo:
                         return False
         return True
 
-    def show(self, time_begining):
+    def show(self, time_begining, table_shown):
         # showing the table
         self.screen.fill(colorback)
         myfont = pygame.font.SysFont("Arial", 60, bold=True)
         for i in range(4):
             for j in range(4):
-                color = Piece(self.table[i][j]).generateColor()
+                color = Piece(table_shown[i][j]).generateColor()
                 pygame.draw.rect(self.screen, color, (j*boxsize+margin,
                                                                         i*boxsize+margin,
                                                                         boxsize-2*margin,
                                                                         boxsize-2*margin),
                                  thickness)
-                if self.table[i][j] != 0:
-                    label = Piece(self.table[i][j]).generateLabel()
+                if table_shown[i][j] != 0:
+                    label = Piece(table_shown[i][j]).generateLabel()
                     self.screen.blit(
                         label, (j*boxsize+2*margin, i*boxsize+9*margin))
         self.manage_timer(time_begining)
@@ -115,7 +115,7 @@ class LevelTwo:
     def runGame(self, time_begining):
         self.table = self.randomfill()
         self.table = self.randomfill()
-        self.show(time_begining)
+        self.show(time_begining, TABLE)
         running = True
         
         while True:
@@ -148,7 +148,7 @@ class LevelTwo:
                         if new_table != self.table:
                             self.table = new_table
                             self.table = self.randomfill()
-                            self.show(time_begining)
+                            self.show(time_begining, self.table)
                         # if self.gameOver():
                         #     showGameOverMessage()
                     
@@ -204,7 +204,7 @@ class LevelTwo:
             if click[0] == 1:
                 self.table = TABLE
                 time_counting = pygame.time.get_ticks()
-                self.show(time_counting)
+                self.show(time_counting, TABLE)
         return time_counting
                 
 
@@ -278,3 +278,6 @@ class LevelTwo:
             T[pi][pj] = 0
             pi -= 1
         return T
+    
+    def __del__(self):
+        print('deleting instance')
