@@ -42,7 +42,7 @@ class Game2048:
                        theme=mytheme,)
 
         menu.add.text_input('Nome :', default='Luiz')
-        menu.add.selector('Level :', [('1', 1), ('2', 2)], onchange=self.set_difficulty)
+        menu.add.selector('Level :', [('1', 1), ('2', 2), ('3', 3)], onchange=self.set_difficulty)
         menu.add.button('Jogar', self.start_the_game)
         menu.add.button('Sair', pygame_menu.events.EXIT)
         menu.mainloop(self.screen)
@@ -169,6 +169,8 @@ class Game2048:
             self.level1()
         elif self.difficulty == 2:
             self.level2()
+        elif self.difficulty == 3:
+            self.level3()
 
     def quit_game(self):
         pygame.quit()
