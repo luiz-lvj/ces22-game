@@ -8,6 +8,8 @@ import math
 from Piece import Piece
 
 
+TABLE_OVER = [[2,4,8,16],[16,8,4,2],[2,4,8,16], [16,8,4,2]]
+MAX_TIME_PER_MOVE = 10000
 
 FPS = 30
 WINDOWWIDTH = 640
@@ -167,20 +169,24 @@ class LevelThree:
         if not self.is_running:
             return
         time_right_now = pygame.time.get_ticks()
-        time_game = time_right_now - time_begining
+        time_game = time_begining - time_right_now + MAX_TIME_PER_MOVE
         time_seconds = math.floor(time_game/1000)
         time_cent = math.floor((time_game - time_seconds*1000)/10) % 100
         time_str = "{}:{}".format(time_seconds, time_cent)
+
+        if time_game < 0:
+            self.is_running = False
+            self.table = TABLE_OVER
+            pygame.display.flip()
+            self.FPS_CONTROLLER.tick(60)
+            return
 
         time_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 30, 150, 100))
         timer = pygame.font.Font('freesansbold.ttf', 35)
         timer_text = timer.render(time_str, True, (255,255,255), (0,0,0))
         display_text = pygame.transform.rotate(timer_text, 0)
         self.screen.blit(display_text, time_rect)
-
-        if time_game > MAX_TIME_GAME:
-            #passar game over
-            pass
+        
 
         pygame.display.flip()
         self.FPS_CONTROLLER.tick(60)
