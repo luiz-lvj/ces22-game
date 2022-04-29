@@ -3,6 +3,7 @@ import sys
 import pygame
 from Level1 import LevelOne
 from Level2 import LevelTwo
+from Level3 import LevelThree
 
 
 class Game2048:
@@ -55,8 +56,10 @@ class Game2048:
                         lambda : self.level1(), "1")
             self.click_to_level("Nível 2", WINDOW_WIDTH/2,0, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH*3/4, WINDOW_HEIGHT/4, (255,0,0),
                         lambda : self.level2(), "2")
-            self.click_to_level("Nível 3", 0,WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/4, WINDOW_HEIGHT*3/4, (0,255,0), None, "3")
-            self.click_to_level("Nível 4", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH*3/4, WINDOW_HEIGHT*3/4, (0,0,255), None, "4")
+            self.click_to_level("Nível 3", 0,WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/4, WINDOW_HEIGHT*3/4, (0,255,0),
+                        lambda : self.level3(), "3")
+            self.click_to_level("Nível 4", WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WINDOW_WIDTH*3/4, WINDOW_HEIGHT*3/4, (0,0,255),
+                        None, "4")
 
             if self.check_for_key_press():
                 pygame.event.get()
@@ -76,9 +79,7 @@ class Game2048:
         click = pygame.mouse.get_pressed()
 
         if center_x - width/2 <= mouse[0] <= center_x + width/2 and center_y - height/2 <= mouse[1] <= center_y + height/2:
-            if click[0] == 1 and play_level != None and level == "1":
-                return play_level()
-            elif click[0] == 1 and play_level != None and level == "2":
+            if click[0] == 1 and play_level != None:
                 return play_level()
 
     def level1(self):
@@ -99,6 +100,23 @@ class Game2048:
 
     def level2(self):
         inst_level = LevelTwo(TABLE, self.screen)
+        timer_counting = pygame.time.get_ticks()
+        state_game = inst_level.runGame(timer_counting)
+        if state_game == 1:
+            del inst_level
+            self.homepage()
+            return
+        while True:
+            self.screen.fill((255,255,255))
+            
+            if self.check_for_key_press():
+                pygame.event.get()
+                return
+            pygame.display.update()
+            self.fps_controller.tick(FPS)
+    
+    def level3(self):
+        inst_level = LevelThree(TABLE, self.screen)
         timer_counting = pygame.time.get_ticks()
         state_game = inst_level.runGame(timer_counting)
         if state_game == 1:

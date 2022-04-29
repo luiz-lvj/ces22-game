@@ -7,7 +7,9 @@ from constants import *
 import math
 from Piece import Piece
 
-FPS = 5
+
+
+FPS = 30
 WINDOWWIDTH = 640
 WINDOWHEIGHT = 640
 boxsize = min(WINDOWWIDTH, WINDOWHEIGHT)//4
@@ -17,6 +19,7 @@ colorback = (189, 174, 158)
 colorblank = (205, 193, 180)
 colorlight = (249, 246, 242)
 colordark = (119, 110, 101)
+MAX_TIME_GAME = 600000
 
 fontSize = [100, 85, 70, 55, 40]
 
@@ -52,11 +55,12 @@ dictcolor2 = {
     8192: colorlight}
 
 
-class LevelOne:
+class LevelThree:
     def __init__(self, table, screen):
         self.table = table
         self.direction = ''
         self.screen = screen
+        self.FPS_CONTROLLER = pygame.time.Clock()
 
     def randomfill(self):
         # search for zero in the game table and randomly fill the places
@@ -89,44 +93,42 @@ class LevelOne:
                         return False
         return True
 
-    def show(self, shown_table):
+    def show(self, time_begining, table_shown):
         # showing the table
         self.screen.fill(colorback)
         myfont = pygame.font.SysFont("Arial", 60, bold=True)
         for i in range(4):
             for j in range(4):
-                color = Piece(shown_table[i][j]).generateColor()
+                color = Piece(table_shown[i][j]).generateColor()
                 pygame.draw.rect(self.screen, color, (j*boxsize+margin,
                                                                         i*boxsize+margin,
                                                                         boxsize-2*margin,
                                                                         boxsize-2*margin),
                                  thickness)
-                if shown_table[i][j] != 0:
-                    label = Piece(shown_table[i][j]).generateLabel()
+                if table_shown[i][j] != 0:
+                    label = Piece(table_shown[i][j]).generateLabel()
                     self.screen.blit(
                         label, (j*boxsize+2*margin, i*boxsize+9*margin))
-
+        self.manage_timer(time_begining)
         pygame.display.update()
 
-    def runGame(self):
+    def runGame(self, time_begining):
         self.table = self.randomfill()
         self.table = self.randomfill()
-        self.show(TABLE)
+        self.show(time_begining, TABLE)
         running = True
-
+        
         while True:
+            self.manage_timer(time_begining)
             for event in pygame.event.get():
                 if not self.button_homepage():
                     return 1
-                self.button_restart()
-
+                time_begining = self.button_restart(time_begining)
                 if event.type == pygame.QUIT:
                     print("quit")
                     pygame.quit()
-                    return sys.exit()
+                    sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if self.gameOver():
-                        print('over')
                     if running:
                         desired_key = None
                         if event.key == pygame.K_UP:
@@ -146,13 +148,34 @@ class LevelOne:
                         if new_table != self.table:
                             self.table = new_table
                             self.table = self.randomfill()
-                            self.show(self.table)
+                            self.show(time_begining, self.table)
+                        # if self.gameOver():
+                        #     showGameOverMessage()
+                    
                     else:
                         return 1
-                        # if gameOver(TABLE):
-                        #     showGameOverMessage()
             pygame.display.update()
 
+    def manage_timer(self, time_begining):
+        time_right_now = pygame.time.get_ticks()
+        time_game = time_right_now - time_begining
+        time_seconds = math.floor(time_game/1000)
+        time_cent = math.floor((time_game - time_seconds*1000)/10) % 100
+        time_str = "{}:{}".format(time_seconds, time_cent)
+
+        time_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 30, 150, 100))
+        timer = pygame.font.Font('freesansbold.ttf', 35)
+        timer_text = timer.render(time_str, True, (255,255,255), (0,0,0))
+        display_text = pygame.transform.rotate(timer_text, 0)
+        self.screen.blit(display_text, time_rect)
+
+        if time_game > MAX_TIME_GAME:
+            #passar game over
+            pass
+
+        pygame.display.flip()
+        self.FPS_CONTROLLER.tick(60)
+    
     def button_homepage(self):
         button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 180, 160, 100))
         button = pygame.font.Font('freesansbold.ttf', 30)
@@ -167,8 +190,7 @@ class LevelOne:
                 return False
         return True
     
-
-    def button_restart(self):
+    def button_restart(self, time_begining):
         button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 430, 160, 100))
         button = pygame.font.Font('freesansbold.ttf', 30)
         buttonr_text = button.render("Reiniciar", True, (255,255,255), (0,0,0))
@@ -177,10 +199,13 @@ class LevelOne:
 
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
+        time_counting = time_begining
         if 650 < mouse[0] < 830 and 430 <= mouse[1] <= 530:
             if click[0] == 1:
                 self.table = TABLE
-                self.show(TABLE)
+                time_counting = pygame.time.get_ticks()
+                self.show(time_counting, TABLE)
+        return time_counting
                 
 
     def key(self, direction, T):
