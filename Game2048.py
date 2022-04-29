@@ -48,8 +48,6 @@ class Game2048:
             pygame.display.update()
             self.fps_controller.tick(FPS)
 
-            
-
     def levels_screen(self):
         while True:
             self.screen.fill((255,255,255))
@@ -85,7 +83,11 @@ class Game2048:
 
     def level1(self):
         inst_level = LevelOne(TABLE, self.screen)
-        inst_level.runGame()
+        state_game = inst_level.runGame()
+        if state_game == 1:
+            del inst_level
+            self.homepage()
+            return
         while True:
             self.screen.fill((255,255,255))
             
@@ -100,7 +102,9 @@ class Game2048:
         timer_counting = pygame.time.get_ticks()
         state_game = inst_level.runGame(timer_counting)
         if state_game == 1:
+            del inst_level
             self.homepage()
+            return
         while True:
             self.screen.fill((255,255,255))
             
