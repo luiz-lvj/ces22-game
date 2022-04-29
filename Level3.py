@@ -9,7 +9,7 @@ from Piece import Piece
 
 
 TABLE_OVER = [[2,4,8,16],[16,8,4,2],[2,4,8,16], [16,8,4,2]]
-MAX_TIME_PER_MOVE = 10000
+MAX_TIME_PER_MOVE = 3000
 
 FPS = 30
 WINDOWWIDTH = 640
@@ -135,6 +135,7 @@ class LevelThree:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
+                    time_begining = pygame.time.get_ticks()
                     if self.gameOver():
                         self.is_running = False
                         self.rect_restart()
