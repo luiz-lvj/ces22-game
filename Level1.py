@@ -119,7 +119,7 @@ class LevelOne:
                 if event.type == QUIT:
                     print("quit")
                     pygame.quit()
-                    sys.exit()
+                    return sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if running:
                         desired_key = None

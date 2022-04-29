@@ -109,7 +109,7 @@ class LevelTwo:
                     label = Piece(self.table[i][j]).generateLabel()
                     self.screen.blit(
                         label, (j*boxsize+2*margin, i*boxsize+9*margin))
-
+        self.manage_timer(time_begining)
         pygame.display.update()
 
     def runGame(self, time_begining):
@@ -117,13 +117,13 @@ class LevelTwo:
         self.table = self.randomfill()
         self.show(time_begining)
         running = True
-
+        
         while True:
             self.manage_timer(time_begining)
-            self.button_restart()
             for event in pygame.event.get():
                 if not self.button_homepage():
                     return 1
+                time_begining = self.button_restart(time_begining)
                 if event.type == pygame.QUIT:
                     print("quit")
                     pygame.quit()
@@ -154,13 +154,14 @@ class LevelTwo:
                     
                     else:
                         return 1
+            pygame.display.update()
+
     def manage_timer(self, time_begining):
         time_right_now = pygame.time.get_ticks()
         time_game = time_right_now - time_begining
         time_seconds = math.floor(time_game/1000)
         time_cent = math.floor((time_game - time_seconds*1000)/10) % 100
         time_str = "{}:{}".format(time_seconds, time_cent)
-
 
         time_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 30, 150, 100))
         timer = pygame.font.Font('freesansbold.ttf', 35)
@@ -189,7 +190,7 @@ class LevelTwo:
                 return False
         return True
     
-    def button_restart(self):
+    def button_restart(self, time_begining):
         button_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 430, 160, 100))
         button = pygame.font.Font('freesansbold.ttf', 30)
         buttonr_text = button.render("Reiniciar", True, (255,255,255), (0,0,0))
@@ -198,12 +199,14 @@ class LevelTwo:
 
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
+        time_counting = time_begining
         if 650 < mouse[0] < 830 and 430 <= mouse[1] <= 530:
             if click[0] == 1:
-                self.table = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
-                timer_counting = pygame.time.get_ticks()
-                self.runGame(timer_counting)
-        
+                self.table = TABLE
+                time_counting = pygame.time.get_ticks()
+                self.show(time_counting)
+        return time_counting
+                
 
     def key(self, direction, T):
         if direction == 'w':
