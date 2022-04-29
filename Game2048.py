@@ -4,31 +4,48 @@ import pygame
 from Level1 import LevelOne
 from Level2 import LevelTwo
 from Level3 import LevelThree
+import pygame_menu
 
+
+mytheme = pygame_menu.themes.THEME_BLUE.copy()
+mytheme.title_background_color=(189, 174, 158)
+mytheme.title_font_color=(255, 255, 255)
+mytheme.background_color=(205, 193, 180)
+mytheme.widget_font_color=(119, 110, 101)
 
 class Game2048:
 
     def __init__(self, screen, fps_controller):
         self.screen = screen
         self.fps_controller = fps_controller
+        self.difficulty = 1
 
 
     def homepage(self):
-        title = pygame.font.Font('freesansbold.ttf', 100)
-        title_surf = title.render('2^n plus', True, (0,0,0), (255,255,255))
-        while True:
-            self.screen.fill((255,255,255))
-            display_game_name = pygame.transform.rotate(title_surf, 0)
-            rect_name = display_game_name.get_rect()
-            rect_name.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT/8)
-            self.screen.blit(display_game_name, rect_name)
-            self.button_start_play()
+        self.difficulty = 1
+        # title = pygame.font.Font('freesansbold.ttf', 100)
+        # title_surf = title.render('2^n plus', True, (0,0,0), (255,255,255))
+        # while True:
+        #     self.screen.fill((255,255,255))
+        #     display_game_name = pygame.transform.rotate(title_surf, 0)
+        #     rect_name = display_game_name.get_rect()
+        #     rect_name.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT/8)
+        #     self.screen.blit(display_game_name, rect_name)
+        #     self.button_start_play()
 
-            if self.check_for_key_press():
-                pygame.event.get()
-                return
-            pygame.display.update()
-            self.fps_controller.tick(FPS)
+        #     if self.check_for_key_press():
+        #         pygame.event.get()
+        #         return
+        #     pygame.display.update()
+        #     self.fps_controller.tick(FPS)
+        menu = pygame_menu.Menu('2^N plus', WINDOW_WIDTH, WINDOW_HEIGHT,
+                       theme=mytheme,)
+
+        menu.add.text_input('Nome :', default='Luiz')
+        menu.add.selector('Level :', [('1', 1), ('2', 2)], onchange=self.set_difficulty)
+        menu.add.button('Jogar', self.start_the_game)
+        menu.add.button('Sair', pygame_menu.events.EXIT)
+        menu.mainloop(self.screen)
 
     def button_start_play(self):
         start_game_str = pygame.font.Font('freesansbold.ttf', 100).render('Jogar', True, (255,255,255), (0,255,0))
@@ -143,6 +160,15 @@ class Game2048:
         if keyUpEvents[0].key == pygame.K_ESCAPE:
             self.quit_game()
         return keyUpEvents[0].key
+
+    def set_difficulty(self, value, difficulty):
+        self.difficulty = difficulty
+
+    def start_the_game(self):
+        if self.difficulty == 1:
+            self.level1()
+        elif self.difficulty == 2:
+            self.level2()
 
     def quit_game(self):
         pygame.quit()
