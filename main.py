@@ -4,6 +4,7 @@ from constants import *
 import sys
 from Level1 import LevelOne
 from Level2 import LevelTwo
+from Game2048 import Game2048
 
 
 global FPS_CONTROLLER, screen, MAIN_FONT
@@ -13,8 +14,13 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 MAIN_FONT = pygame.font.Font('freesansbold.ttf', 18)
 pygame.display.set_caption('2^n plus')
 
+game_instance = Game2048(screen, FPS_CONTROLLER)
 
-def homepage():
+game_instance.homepage()
+
+
+
+"""def homepage():
     title = pygame.font.Font('freesansbold.ttf', 100)
     title_surf = title.render('2^n plus', True, (0,0,0), (255,255,255))
     while True:
@@ -128,4 +134,4 @@ def check_for_key_press():
 def quit_game():
     pygame.quit()
     sys.exit()
-homepage()
+homepage()"""
