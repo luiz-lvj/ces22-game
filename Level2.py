@@ -7,7 +7,7 @@ from constants import *
 import math
 from Piece import Piece
 
-
+TABLE_OVER = [[2,4,8,16],[16,8,4,2],[2,4,8,16], [16,8,4,2]]
 
 FPS = 30
 WINDOWWIDTH = 640
@@ -167,15 +167,18 @@ class LevelTwo:
         time_cent = math.floor((time_game - time_seconds*1000)/10) % 100
         time_str = "{}:{}".format(time_seconds, time_cent)
 
+        if time_game > MAX_TIME_GAME:
+           self.is_running = False
+           self.table = TABLE_OVER
+           pygame.display.flip()
+           self.FPS_CONTROLLER.tick(60)
+           return
+
         time_rect = pygame.draw.rect(self.screen, (0,0,0), (650, 30, 150, 100))
         timer = pygame.font.Font('freesansbold.ttf', 35)
         timer_text = timer.render(time_str, True, (255,255,255), (0,0,0))
         display_text = pygame.transform.rotate(timer_text, 0)
         self.screen.blit(display_text, time_rect)
-
-        if time_game > MAX_TIME_GAME:
-            #passar game over
-            pass
 
         pygame.display.flip()
         self.FPS_CONTROLLER.tick(60)
